@@ -18,25 +18,14 @@ import shoes2 from './images/shoes2.jpeg';
 import shoes3 from './images/shoes3.webp';
 import shoes4 from './images/shoes4.jpeg';
 import React from 'react';
+
 import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import Cart from './components/Cart';
 
-function App() {
-  const [cartCount, setCartCount] = useState(0);
-  const [searchText, setSearchText] = useState('');
-  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  let scrollTimer = null;
-
-  const handleScroll = (e) => {
-    setIsScrolling(true);
-    if (scrollTimer) {
-      clearTimeout(scrollTimer);
-    }
-    scrollTimer = setTimeout(() => {
-      setIsScrolling(false);
-    }, 1000);
-  };
-
+function MainContent({ cartCount, setCartCount, cartItems, setCartItems, searchText, setSearchText, showCategoryMenu, setShowCategoryMenu, addToCart }) {
+  const navigate = useNavigate();
+  
   return (
     <div className="App" style={{
       backgroundImage: `url(${bgi})`,
@@ -80,23 +69,16 @@ function App() {
           <ul className="nav-links">
             <li>Home</li>
             <li className="divider">|</li>
-            <li className="dropdown" onMouseEnter={() => setShowCategoryMenu(true)} onMouseLeave={() => setShowCategoryMenu(false)}>
-              Collections
-              {showCategoryMenu && (
-                <div className="dropdown-content">
-                  <a href="#">New Arrivals</a>
-                  <a href="#">Luxury Edit</a>
-                  <a href="#">Sustainable Fashion</a>
-                  <a href="#">Designer Picks</a>
-                </div>
-              )}
-            </li>
+            <li>Collections</li>
             <li className="divider">|</li>
             <li>Sale</li>
             <li className="divider">|</li>
-            <li className="cart-icon" style={{ position: 'relative' }}>
-              <i className="fas fa-shopping-bag"></i>
-              {cartCount > 0 && <span className="cart-count" style={{
+            {/* Find the cart icon section and update it to: */}
+            <li className="cart-icon" 
+                style={{ position: 'relative', cursor: 'pointer' }} 
+                onClick={() => navigate('/cart')}>
+            <i className="fas fa-shopping-bag"></i>
+            {cartCount > 0 && <span className="cart-count" style={{
                 position: 'absolute',
                 top: '-5px',
                 right: '-10px',
@@ -117,7 +99,7 @@ function App() {
           </ul>
         </nav>
       </div>
-
+  
       <main>
         <div className="main-content-grid">
           <div className="side-by-side-container">
@@ -132,48 +114,54 @@ function App() {
             </aside>
             {/* Removed image-scroll-container */}
           </div>
-
+  
           <div className="main-content">
             <section className="featured-products">
               <div className="category-columns">
                 <div className="category-column">
                   <h3>Bottom Wears</h3>
                   <div className="product-list" style={{ 
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '10px',
-                                padding: '10px',
-                                maxHeight: '400px',
-                                overflowY: 'auto'
-                              }}>
-                                <div className="product-card" style={{ 
-                                  width: '100%',
-                                  height: '100%',
-                                  margin: '0',
-                                  flex: '0 0 auto',
-                                  display: 'flex',
-                                  flexDirection: 'column'
-                                }}>
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(2, 1fr)',
+                                    gap: '10px',
+                                    padding: '10px',
+                                    maxHeight: '400px',
+                                    overflowY: 'auto'
+                                  }}>
+                                    <div className="product-card" style={{ 
+                                      width: '100%',
+                                      height: '100%',
+                                      margin: '0',
+                                      flex: '0 0 auto',
+                                      display: 'flex',
+                                      flexDirection: 'column'
+                                    }}>
                       <img src={bottom1} alt="Bottom 1" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Casual Jeans</h4>
-                        <p style={{ fontSize: '12px' }}>₹69.99</p>
-                        <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
+                        <p style={{ fontSize: '12px' }}>₹650.74</p>
+                        {/* // Update the product card buttons to use addToCart, for example: */}
+                        <button onClick={() => addToCart({
+                          id: 'bottom1',
+                          name: 'Casual Jeans',
+                          price: 69.99,
+                          image: bottom1
+                        })} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
                     <div className="product-card" style={{ width: '150px', margin: '5px', flex: '0 0 auto' }}>
                       <img src={bottom2} alt="Bottom 2" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Slim Fit Pants</h4>
-                        <p style={{ fontSize: '12px' }}>₹74.99</p>
+                        <p style={{ fontSize: '12px' }}>₹535.60</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
                     <div className="product-card" style={{ width: '150px', margin: '5px', flex: '0 0 auto' }}>
                       <img src={bottom3} alt="Bottom 3" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
-                        <h4 style={{ fontSize: '14px' }}>Cargo Pants</h4>
-                        <p style={{ fontSize: '12px' }}>₹64.99</p>
+                        <h4 style={{ fontSize: '14px' }}>Kurti</h4>
+                        <p style={{ fontSize: '12px' }}>₹599.00</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -181,7 +169,7 @@ function App() {
                       <img src={bottom4} alt="Bottom 4" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Formal Trousers</h4>
-                        <p style={{ fontSize: '12px' }}>₹79.99</p>
+                        <p style={{ fontSize: '12px' }}>₹353.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -208,7 +196,7 @@ function App() {
                       <img src={top1} alt="Top 1" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Casual Top</h4>
-                        <p style={{ fontSize: '12px' }}>₹39.99</p>
+                        <p style={{ fontSize: '12px' }}>₹670.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -216,7 +204,7 @@ function App() {
                       <img src={top2} alt="Top 2" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Summer Top</h4>
-                        <p style={{ fontSize: '12px' }}>₹34.99</p>
+                        <p style={{ fontSize: '12px' }}>₹700.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -224,7 +212,7 @@ function App() {
                       <img src={top3} alt="Top 3" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Trendy Top</h4>
-                        <p style={{ fontSize: '12px' }}>₹44.99</p>
+                        <p style={{ fontSize: '12px' }}>₹1500.00</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -232,7 +220,7 @@ function App() {
                       <img src={top4} alt="Top 4" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Fashion Top</h4>
-                        <p style={{ fontSize: '12px' }}>₹49.99</p>
+                        <p style={{ fontSize: '12px' }}>₹750.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -259,7 +247,7 @@ function App() {
                       <img src={shoes1} alt="Shoes 1" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Casual Sneakers</h4>
-                        <p style={{ fontSize: '12px' }}>₹79.99</p>
+                        <p style={{ fontSize: '12px' }}>₹1200.00</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -267,7 +255,7 @@ function App() {
                       <img src={shoes2} alt="Shoes 2" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Sport Shoes</h4>
-                        <p style={{ fontSize: '12px' }}>₹89.99</p>
+                        <p style={{ fontSize: '12px' }}>₹1800.00</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -275,7 +263,7 @@ function App() {
                       <img src={shoes3} alt="Shoes 3" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Formal Shoes</h4>
-                        <p style={{ fontSize: '12px' }}>₹99.99</p>
+                        <p style={{ fontSize: '12px' }}>₹700.00</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -283,7 +271,7 @@ function App() {
                       <img src={shoes4} alt="Shoes 4" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Running Shoes</h4>
-                        <p style={{ fontSize: '12px' }}>₹84.99</p>
+                        <p style={{ fontSize: '12px' }}>₹3000.90</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -310,7 +298,7 @@ function App() {
                       <img src={shirt1} alt="Shirt 1" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Classic Shirt</h4>
-                        <p style={{ fontSize: '12px' }}>₹49.99</p>
+                        <p style={{ fontSize: '12px' }}>₹1000.90</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -318,7 +306,7 @@ function App() {
                       <img src={shirt2} alt="Shirt 2" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Casual Shirt</h4>
-                        <p style={{ fontSize: '12px' }}>₹45.99</p>
+                        <p style={{ fontSize: '12px' }}>₹800.70</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -326,7 +314,7 @@ function App() {
                       <img src={shirt3} alt="Shirt 3" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Formal Shirt</h4>
-                        <p style={{ fontSize: '12px' }}>₹59.99</p>
+                        <p style={{ fontSize: '12px' }}>₹650.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -334,7 +322,7 @@ function App() {
                       <img src={shirt4} alt="Shirt 4" style={{ width: '100%', height: 'auto' }} />
                       <div className="product-info">
                         <h4 style={{ fontSize: '14px' }}>Printed Shirt</h4>
-                        <p style={{ fontSize: '12px' }}>₹54.99</p>
+                        <p style={{ fontSize: '12px' }}>₹800.99</p>
                         <button onClick={() => setCartCount(cartCount + 1)} style={{ fontSize: '12px', padding: '5px' }}>Add to Cart</button>
                       </div>
                     </div>
@@ -382,6 +370,36 @@ function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const addToCart = (item) => {
+    setCartItems([...cartItems, item]);
+    setCartCount(cartCount + 1);
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={
+        <MainContent 
+          cartCount={cartCount}
+          setCartCount={setCartCount}
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          showCategoryMenu={showCategoryMenu}
+          setShowCategoryMenu={setShowCategoryMenu}
+          addToCart={addToCart}
+        />
+      } />
+      <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} setCartCount={setCartCount} />} />
+    </Routes>
   );
 }
 
